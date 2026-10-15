@@ -1,7 +1,7 @@
-# Reflection (≤1 page)
+# Reflection
 
-Fill this in before you submit.
+The hardest faults to detect are the subtle shifts in AI infrastructure and data quality. A feature mean shift or embedding centroid change can sit close to normal stream variation, so the published baseline alone is not always a useful alert boundary. Lineage faults also need structural checks: a run can finish normally while silently losing a required upstream dependency.
 
-**Which fault types were hardest to catch, and why?**
+I use one measured tool call per event, then apply free checks against the published baseline and event metadata. This keeps the cost predictable and avoids duplicate RPCs. On Practice, the detector caught all 33 faulty events with no false alarms and spent 180 of 220 credits. On Public, it caught 97.44% of faults with no false alarms; the 240-credit spend exceeded the 220-credit budget by 9.09%. On the official Private run, it scored 32.41 with TPR 64.81%, FPR 0%, and no cost overage. The Private result shows that conservative thresholds protected precision and budget, but subtle faults remained difficult to catch.
 
-**What would you change about your cost/coverage tradeoff, if you had another pass?**
+With another iteration, I would use `ctx.state` to track short rolling histories for numeric measurements and compare each event with both the published baseline and recent stream behavior. I would validate any adaptive threshold against clean events before lowering it, because the FPR penalty is substantial. I would also keep lineage expectations tied to model metadata so missing edges are checked only where those dependencies are required.
